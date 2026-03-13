@@ -163,18 +163,6 @@ const Roadmap = () => {
                         <h2 className="text-5xl font-[1000] text-white italic tracking-tighter uppercase leading-none">Specialization Dossier</h2>
                         <p className="text-slate-500 font-bold uppercase tracking-[0.4em] text-xs">Strategic Roadmap for {user?.characterClass}</p>
                     </div>
-                    
-                    <div className="flex items-center gap-4 bg-slate-950/50 p-4 rounded-3xl border border-white/5">
-                        <div className="text-right">
-                            <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Global Rank</div>
-                            <div className="text-xl font-black text-white italic">#14,204</div>
-                        </div>
-                        <div className="w-px h-8 bg-white/10 mx-2"></div>
-                        <div className="text-right">
-                            <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Growth Rate</div>
-                            <div className="text-xl font-black text-emerald-400 italic">+12.4%</div>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 relative z-10">
