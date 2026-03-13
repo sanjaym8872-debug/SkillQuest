@@ -2,6 +2,10 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import axios from 'axios'
+
+// Ensure session cookies are sent across domains for production
+axios.defaults.withCredentials = true;
 
 window.onerror = (msg, url, lineNo, columnNo, error) => {
   console.error('Frontend Error:', error);
