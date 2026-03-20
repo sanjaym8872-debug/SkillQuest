@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Badge = require('../models/Badge');
+const passport = require('passport');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -98,5 +99,24 @@ router.get('/me', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+// --- GOOGLE OAUTH ROUTES ---
+
+// Initiate Google Login
+router.get('/google', passport.authenticate('google', { 
+    scope: ['profile', 'email'] 
+}));
+
+// Google Auth Callback
+router.get('/google/callback', 
+    passport.authenticate('google', { failureRedirect: process.env.CLIENT_URL + '/login' }),
+    (req, res) => {
+        // Successful authentication, set session userId since that's what other parts of the app use
+        if (req.user) {
+            req.session.userId = req.user._id;
+        }
+        res.redirect(process.env.CLIENT_URL + '/');
+    }
+);
 
 module.exports = router;

@@ -6,6 +6,10 @@ const MongoStore = require('connect-mongo');
 const morgan = require('morgan');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+const passport = require('passport');
+
+// Load passport config
+require('./config/passport');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -46,6 +50,9 @@ app.use(session({
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use('/api/auth', authRoutes);

@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String },
+  googleId: { type: String, unique: true, sparse: true },
   characterClass: {
     type: String,
     enum: ['Frontend Warrior', 'Data Mage', 'Cloud Engineer', 'Cyber Ninja', 'AI Architect', 'DevOps Paladin', 'UI/UX Sorcerer', 'Mobile Monk', 'Blockchain Bard', 'QA Shadow', 'Data Warden', 'Backend Titan', 'Unassigned'],
