@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Sword, TrendingUp, Trophy, LogOut, Zap, Shield, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Sword, TrendingUp, Trophy, LogOut, Zap, Shield, Sun, Moon, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
@@ -15,6 +15,7 @@ const Navbar = () => {
         { path: '/boss-battle', label: 'THE ARENA', icon: <Sword size={18} /> },
         { path: '/roadmap', label: 'QUEST LOG', icon: <TrendingUp size={18} /> },
         { path: '/leaderboard', label: 'RANKINGS', icon: <Trophy size={18} /> },
+        { path: '/card-clash', label: 'THE CLASH', icon: <Sparkles size={18} /> },
     ];
 
     return (

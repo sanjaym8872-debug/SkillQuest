@@ -89,6 +89,11 @@ app.get('/', (req, res) => {
     res.send('Skill Quest RPG API is running...');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const http = require('http');
+const server = http.createServer(app);
+const { setupSocket } = require('./socket');
+setupSocket(server);
+
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} with Sockets enabled`);
 });

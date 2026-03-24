@@ -12,6 +12,7 @@ import BirdGame from './pages/BirdGame';
 import DailySpikeGame from './pages/DailySpikeGame';
 import TerminalVelocity from './pages/TerminalVelocity';
 import BalloonSurvival from './pages/BalloonSurvival';
+import CardClash from './pages/CardClash';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -79,6 +80,7 @@ function App() {
             <Route path="/bird-game/:skill" element={<ProtectedLayout><BirdGame /></ProtectedLayout>} />
             <Route path="/terminal-velocity" element={<ProtectedLayout><TerminalVelocity /></ProtectedLayout>} />
             <Route path="/balloon-survival/:skill" element={<ProtectedLayout><BalloonSurvival /></ProtectedLayout>} />
+            <Route path="/card-clash" element={<ProtectedLayout><CardClash /></ProtectedLayout>} />
             <Route path="/daily-spike/:stepId/:xp/:taskText" element={<ProtectedLayout><DailySpikeGame /></ProtectedLayout>} />
 
             {/* Catch-all */}
