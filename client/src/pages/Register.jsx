@@ -84,7 +84,7 @@ const Register = () => {
                 className="relative z-10 w-full max-w-[1000px] grid grid-cols-1 lg:grid-cols-2 bg-slate-900/40 backdrop-blur-3xl rounded-[40px] border border-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.5)] overflow-hidden"
             >
                 {/* Left Side: Brand/Visual */}
-                <div className="hidden lg:flex flex-col justify-center p-12 bg-gradient-to-br from-emerald-600/10 to-transparent border-r border-white/5 relative">
+                <div className="hidden lg:flex flex-col justify-start pt-24 p-12 bg-gradient-to-br from-emerald-600/10 to-transparent border-r border-white/5 relative">
                     <div className="absolute top-10 left-10">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)]">
@@ -101,8 +101,7 @@ const Register = () => {
                             transition={{ delay: 0.3 }}
                         >
                             <h2 className="text-5xl font-black text-white leading-tight uppercase italic tracking-tighter">
-                                Forge your <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-indigo-500">Legendary</span> Identity
+                                Forge your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-indigo-500">Legendary</span> Identity
                             </h2>
                             <p className="text-slate-400 mt-4 text-lg font-medium max-w-sm">
                                 Join thousands of heroes leveling up their real-world skills through tactical mini-games.
@@ -127,6 +126,108 @@ const Register = () => {
                                 </motion.div>
                             ))}
                         </div>
+
+                        {/* Stats Row */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.9 }}
+                            className="grid grid-cols-3 gap-3 mt-8"
+                        >
+                            {[
+                                { value: '12+', label: 'Career Paths' },
+                                { value: '500+', label: 'Missions' },
+                                { value: '10K+', label: 'Heroes' },
+                            ].map((stat, i) => (
+                                <div key={i} className="bg-white/5 border border-white/5 rounded-2xl px-3 py-4 text-center backdrop-blur-sm">
+                                    <div className="text-xl font-black text-white tracking-tight">{stat.value}</div>
+                                    <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mt-0.5">{stat.label}</div>
+                                </div>
+                            ))}
+                        </motion.div>
+
+                        {/* Divider */}
+                        <div className="flex items-center gap-3 mt-8">
+                            <div className="h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent flex-1"></div>
+                            <span className="text-[8px] font-black text-emerald-500/60 uppercase tracking-[0.3em]">About SkillQuest</span>
+                            <div className="h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent flex-1"></div>
+                        </div>
+
+                        {/* About blurb */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1.1 }}
+                            className="mt-4 bg-white/[0.03] border border-white/5 rounded-2xl p-5 space-y-3"
+                        >
+                            <p className="text-slate-400 text-[12px] leading-relaxed">
+                                SkillQuest transforms your tech learning into an <span className="text-emerald-400 font-bold">RPG adventure</span>. Complete real-world missions, battle skill bosses, and level up your developer profile — all while building a verified portfolio of skills.
+                            </p>
+                            <div className="flex flex-wrap gap-2 pt-1">
+                                {['Missions', 'Quizzes', 'Skill Runner', 'Bird Game', 'Balloon Quest', 'Leaderboard'].map((tag) => (
+                                    <span key={tag} className="px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[8px] font-black text-indigo-400 uppercase tracking-widest">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Animated Live Activity */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 1.3 }}
+                            className="mt-6 relative rounded-2xl border border-white/5 bg-black/20 overflow-hidden p-4"
+                            style={{ height: '110px' }}
+                        >
+                            {/* Scanning line */}
+                            <motion.div
+                                animate={{ top: ['0%', '100%', '0%'] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                                className="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent z-10 pointer-events-none"
+                            />
+                            {/* Grid dots */}
+                            <div className="absolute inset-0 opacity-10"
+                                style={{ backgroundImage: 'radial-gradient(circle, #4ade80 1px, transparent 1px)', backgroundSize: '18px 18px' }}
+                            />
+                            {/* Floating orbs */}
+                            {[
+                                { x: '10%', delay: 0,   size: 28, color: 'bg-emerald-500/30' },
+                                { x: '35%', delay: 0.8, size: 20, color: 'bg-indigo-500/30'  },
+                                { x: '60%', delay: 1.6, size: 24, color: 'bg-teal-500/30'    },
+                                { x: '82%', delay: 0.4, size: 16, color: 'bg-purple-500/30'  },
+                            ].map((orb, i) => (
+                                <motion.div
+                                    key={i}
+                                    animate={{ y: [0, -18, 0], scale: [1, 1.15, 1], opacity: [0.5, 1, 0.5] }}
+                                    transition={{ duration: 2.5 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: orb.delay }}
+                                    className={`absolute rounded-full blur-sm ${orb.color}`}
+                                    style={{ left: orb.x, bottom: '20%', width: orb.size, height: orb.size }}
+                                />
+                            ))}
+                            {/* Live tag */}
+                            <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                                <motion.div
+                                    animate={{ opacity: [1, 0, 1] }}
+                                    transition={{ duration: 1.2, repeat: Infinity }}
+                                    className="w-1.5 h-1.5 rounded-full bg-emerald-400"
+                                />
+                                <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Live</span>
+                            </div>
+                            {/* Scrolling skill labels */}
+                            <div className="absolute bottom-3 left-3 right-3 flex gap-2 overflow-hidden">
+                                {['React', 'Python', 'Docker', 'Go', 'Solidity', 'Flutter', 'Figma', 'AWS'].map((s, i) => (
+                                    <motion.span
+                                        key={s}
+                                        animate={{ x: [0, -320] }}
+                                        transition={{ duration: 10, repeat: Infinity, ease: 'linear', delay: i * 0.3 }}
+                                        className="shrink-0 text-[8px] font-black text-slate-500 uppercase tracking-widest px-2 py-0.5 bg-white/5 rounded-full border border-white/5"
+                                    >
+                                        {s}
+                                    </motion.span>
+                                ))}
+                            </div>
+                        </motion.div>
                     </div>
                 </div>
 

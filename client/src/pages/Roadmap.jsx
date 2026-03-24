@@ -345,6 +345,7 @@ const Roadmap = () => {
                                 </motion.div>
                             ))
                         )}
+
                     </AnimatePresence>
                 </div>
 
@@ -486,6 +487,324 @@ const Roadmap = () => {
                             ))}
                         </div>
                     </div>
+
+                    {/* Mission Intel */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="game-card bg-slate-900/40 border-slate-800"
+                    >
+                        <div className="flex items-center gap-3 mb-5">
+                            <Target className="text-amber-500" size={16} />
+                            <h3 className="font-black text-white text-sm uppercase tracking-widest">Mission Intel</h3>
+                        </div>
+                        <div className="space-y-3">
+                            {[
+                                { label: 'Available', value: missions.filter(m => m.status === 'available').length, color: 'bg-slate-700', text: 'text-slate-300' },
+                                { label: 'In Progress', value: missions.filter(m => m.status === 'in-progress').length, color: 'bg-indigo-500', text: 'text-indigo-300' },
+                                { label: 'Completed', value: missions.filter(m => m.status === 'completed').length, color: 'bg-emerald-500', text: 'text-emerald-300' },
+                            ].map((row) => (
+                                <div key={row.label} className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-2 flex-1">
+                                        <div className={`w-1.5 h-1.5 rounded-full ${row.color}`} />
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{row.label}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-1">
+                                        <div className="h-1 flex-1 bg-slate-900 rounded-full overflow-hidden">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                animate={{ width: missions.length > 0 ? `${(row.value / missions.length) * 100}%` : '0%' }}
+                                                transition={{ delay: 0.8, duration: 0.6 }}
+                                                className={`h-full rounded-full ${row.color}`}
+                                            />
+                                        </div>
+                                        <span className={`text-[11px] font-black w-4 text-right ${row.text}`}>{row.value}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center">
+                            <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Total Quests</span>
+                            <span className="text-sm font-black text-white">{missions.length}</span>
+                        </div>
+                    </motion.div>
+
+                    {/* Character Class Card */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 }}
+                        className="relative game-card border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 via-slate-900/40 to-purple-500/5 overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 opacity-5 pointer-events-none">
+                            <Shield size={100} />
+                        </div>
+                        <div className="relative z-10 space-y-3">
+                            <div className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.3em]">Active Class</div>
+                            <div className="text-xl font-black text-white italic uppercase tracking-tighter leading-tight">
+                                {user?.characterClass || 'Unknown Class'}
+                            </div>
+                            <div className="h-px bg-gradient-to-r from-indigo-500/30 to-transparent" />
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Hero Level</div>
+                                    <div className="text-2xl font-black text-amber-400 tracking-tighter">{user?.level || 1}</div>
+                                </div>
+                                <div className="space-y-1 text-right">
+                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Rank</div>
+                                    <div className="text-sm font-black text-purple-300 uppercase tracking-tight">{user?.rank || 'Rookie'}</div>
+                                </div>
+                                <div className="space-y-1 text-right">
+                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Total XP</div>
+                                    <div className="text-sm font-black text-indigo-300 tracking-tight">{(user?.xp || 0).toLocaleString()}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Role Profile Card */}
+                    {(() => {
+                        const ROLE_INFO = {
+                            'Frontend Warrior':  { emoji: '⚔️', desc: 'Masters of UI/UX and browser rendering. Build blazing-fast, accessible web interfaces.', skills: ['React', 'TypeScript', 'CSS', 'Next.js'], advantages: ['High demand in startups', 'Visible impact', 'Rich ecosystem'] },
+                            'Backend Titan':     { emoji: '🏛️', desc: 'Architects of server logic, APIs and databases. The backbone of every system.', skills: ['Node.js', 'Go', 'PostgreSQL', 'Redis'], advantages: ['Critical infrastructure', 'High salary', 'System design mastery'] },
+                            'Data Mage':         { emoji: '🔮', desc: 'Extract insight from chaos. Turn raw data into decisions that drive products.', skills: ['Python', 'Pandas', 'SQL', 'ML'], advantages: ['AI era advantage', 'Cross-domain use', 'Research & industry'] },
+                            'Cloud Engineer':    { emoji: '☁️', desc: 'Owns the sky. Deploy, scale, and secure infrastructure across global cloud platforms.', skills: ['AWS', 'Docker', 'Terraform', 'Kubernetes'], advantages: ['Remote-first roles', 'Cert-based growth', 'DevOps synergy'] },
+                            'Cyber Ninja':       { emoji: '🥷', desc: 'Ethical hackers and defenders. Protect systems before attackers can exploit them.', skills: ['Linux', 'Pentesting', 'Networking', 'OSINT'], advantages: ['Zero unemployment', 'Cat-and-mouse thrill', 'Govt & enterprise'] },
+                            'AI Architect':      { emoji: '🤖', desc: 'Designs and trains intelligent systems. From LLMs to neural pipelines.', skills: ['PyTorch', 'LangChain', 'OpenAI API', 'Vector DBs'], advantages: ['Frontier of tech', 'Massive funding era', 'Cross-industry'] },
+                            'DevOps Paladin':    { emoji: '🛡️', desc: 'Bridges dev and ops. Automates CI/CD, monitors reliability, and owns uptime.', skills: ['Jenkins', 'Prometheus', 'Helm', 'ArgoCD'], advantages: ['SRE demand rising', 'Stability-focused', 'Full system view'] },
+                            'UI/UX Sorcerer':    { emoji: '🎨', desc: 'Crafts magical user experiences. Human-centered design that converts and delights.', skills: ['Figma', 'Prototyping', 'User Research', 'A/B Testing'], advantages: ['Creative + data blend', 'Product teams need you', 'Designer-dev bridge'] },
+                            'Mobile Monk':       { emoji: '📱', desc: 'Builds native & cross-platform apps. Billions of phones, endless opportunity.', skills: ['React Native', 'Flutter', 'Swift', 'Firebase'], advantages: ['App store revenue', 'Offline-first UX', 'Growing market'] },
+                            'Blockchain Bard':   { emoji: '⛓️', desc: 'Writes decentralized contracts and DApps. Building the trustless economy.', skills: ['Solidity', 'Ethers.js', 'IPFS', 'Hardhat'], advantages: ['Web3 pioneer role', 'Token incentives', 'Global permissionless'] },
+                            'QA Shadow':         { emoji: '🔍', desc: 'Hunts bugs before users do. Writes tests, scripts automation, guards quality gates.', skills: ['Cypress', 'Playwright', 'Jest', 'Postman'], advantages: ['Every team needs QA', 'Automation focus', 'Reliability champion'] },
+                            'Data Warden':       { emoji: '🗄️', desc: 'Governs data pipelines, privacy, and warehouses. The guardian of enterprise data.', skills: ['Airflow', 'Snowflake', 'dbt', 'PostgreSQL'], advantages: ['Compliance is rising', 'Data-first companies', 'Governance demand'] },
+                        };
+                        const info = ROLE_INFO[user?.characterClass];
+                        if (!info) return null;
+                        return (
+                            <motion.div
+                                initial={{ opacity: 0, y: 16 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.9 }}
+                                className="game-card bg-slate-900/40 border-slate-800 space-y-4"
+                            >
+                                {/* Header */}
+                                <div className="flex items-center gap-3">
+                                    <span className="text-2xl">{info.emoji}</span>
+                                    <div>
+                                        <div className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">Role Profile</div>
+                                        <div className="text-sm font-black text-white italic uppercase tracking-tighter">{user.characterClass}</div>
+                                    </div>
+                                </div>
+
+                                {/* Description */}
+                                <p className="text-[11px] text-slate-400 leading-relaxed border-l-2 border-indigo-500/30 pl-3">
+                                    {info.desc}
+                                </p>
+
+                                {/* Core Skills */}
+                                <div className="space-y-2">
+                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Core Skills</div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {info.skills.map(s => (
+                                            <span key={s} className="px-2 py-0.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-[9px] font-black text-indigo-300 uppercase tracking-widest">
+                                                {s}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Advantages */}
+                                <div className="space-y-2">
+                                    <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Advantages</div>
+                                    <div className="space-y-1.5">
+                                        {info.advantages.map((adv, i) => (
+                                            <div key={i} className="flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                                                <span className="text-[10px] font-bold text-slate-400">{adv}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    })()}
+
+                    {/* Skill Mastery (Neural Connection) */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.1 }}
+                        className="game-card bg-slate-900/40 border-slate-800"
+                    >
+                        <div className="flex items-center gap-3 mb-6">
+                            <Activity className="text-indigo-400" size={16} />
+                            <h3 className="font-black text-white text-sm uppercase tracking-widest">Skill Mastery</h3>
+                        </div>
+                        <div className="space-y-4">
+                            {(user?.skills?.slice(0, 4) || []).map((skill, idx) => (
+                                <div key={skill.name} className="space-y-2">
+                                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest">
+                                        <span className="text-slate-400">{skill.name}</span>
+                                        <span className="text-white">{skill.level}%</span>
+                                    </div>
+                                    <div className="h-1 bg-black/40 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${skill.level}%` }}
+                                            transition={{ delay: 1.3 + (idx * 0.1), duration: 0.8 }}
+                                            className={`h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_0_8px_rgba(99,102,241,0.3)]`}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                            {(!user?.skills || user.skills.length === 0) && (
+                                <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest text-center py-4">No Neural Data Found</p>
+                            )}
+                        </div>
+                    </motion.div>
+
+                    {/* Milestone Card */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.3 }}
+                        className="game-card bg-emerald-500/5 border-emerald-500/20 relative overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                            <Star size={60} className="text-emerald-400" />
+                        </div>
+                        <div className="relative z-10 space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                                    <Star size={16} className="text-emerald-400" />
+                                </div>
+                                <h3 className="font-black text-emerald-400 text-sm uppercase tracking-tighter italic">Next Milestone</h3>
+                            </div>
+                            <div className="space-y-1">
+                                <div className="text-xs font-black text-white uppercase tracking-tight">Level 10 reached</div>
+                                <p className="text-[10px] text-slate-500 font-bold leading-relaxed">Unlock the Boss Battle arena and earn your first Pro Badge.</p>
+                            </div>
+                            <div className="pt-2 border-t border-emerald-500/10">
+                                <div className="flex justify-between items-end mb-2">
+                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Uplink Status</span>
+                                    <span className="text-[10px] font-black text-white">{(user?.level / 10 * 100).toFixed(0)}%</span>
+                                </div>
+                                <div className="h-1 bg-black/40 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${(user?.level / 10 * 100)}%` }}
+                                        className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+
+                    {/* Project Intel - Core Directives */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="game-card bg-slate-900/40 border-slate-800 space-y-5"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                                <Shield size={16} className="text-indigo-400" />
+                            </div>
+                            <h3 className="font-black text-white text-xs uppercase tracking-widest">Project Directives</h3>
+                        </div>
+                        <div className="space-y-4">
+                            {[
+                                { title: 'Skill Validation', desc: 'Every mission is a real-world scenario verified by neural benchmarks.' },
+                                { title: 'Career Synthesis', desc: 'We bridge the gap between learning and industry-standard production.' },
+                                { title: 'Lore Integration', desc: 'Learning is no longer a chore, but a quest for legendary status.' }
+                            ].map((d, i) => (
+                                <div key={i} className="space-y-1 group">
+                                    <div className="text-[10px] font-black text-indigo-400 uppercase tracking-tight group-hover:text-white transition-colors">{d.title}</div>
+                                    <p className="text-[9px] text-slate-500 font-bold leading-relaxed">{d.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* Skill Engine Mechanics */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="game-card bg-indigo-500/5 border-indigo-500/10 space-y-4"
+                    >
+                        <div className="flex items-center justify-between">
+                            <h3 className="font-black text-slate-400 text-[10px] uppercase tracking-widest">SkillQuest Engine</h3>
+                            <div className="flex gap-1">
+                                {[...Array(3)].map((_, i) => <div key={i} className="w-1 h-1 rounded-full bg-indigo-500/40 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />)}
+                            </div>
+                        </div>
+                        <p className="text-[10px] text-slate-500 font-medium italic leading-relaxed">
+                            "The SkillQuest protocol uses a proprietary V-Sync algorithm to map your code commits and quiz results directly to your neural profile, ensuring 100% accurate growth tracking."
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                            <div className="p-3 bg-black/20 rounded-2xl border border-white/5">
+                                <div className="text-[8px] font-black text-slate-600 uppercase mb-1">Processing</div>
+                                <div className="text-xs font-black text-indigo-400 tracking-tighter italic">Async_V3</div>
+                            </div>
+                            <div className="p-3 bg-black/20 rounded-2xl border border-white/5">
+                                <div className="text-[8px] font-black text-slate-600 uppercase mb-1">Latency</div>
+                                <div className="text-xs font-black text-emerald-400 tracking-tighter italic">0.02ms</div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Career Uplink Advantage */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="game-card border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-transparent space-y-4"
+                    >
+                        <div className="flex items-center gap-3">
+                            <Zap size={16} className="text-amber-500" />
+                            <h3 className="font-black text-amber-500 text-xs uppercase tracking-widest">Career Advantage</h3>
+                        </div>
+                        <ul className="space-y-2">
+                            {[
+                                'Verified Skill Badges for LinkedIn',
+                                'Direct Interview Portals (lvl 20+)',
+                                'Resume-ready Project Portfolio',
+                                'Global Developer Rankings'
+                            ].map((text, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                    <div className="mt-1 w-1 h-1 rounded-full bg-amber-500 flex-shrink-0" />
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{text}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </motion.div>
+
+                    {/* Project Lore - SkillQuest Protocol */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="game-card border-indigo-500/10 bg-indigo-500/[0.02] space-y-4"
+                    >
+                        <div className="flex items-center gap-3">
+                            <Database className="text-indigo-400" size={16} />
+                            <h3 className="font-black text-indigo-400 text-[10px] uppercase tracking-widest">Protocol Intelligence</h3>
+                        </div>
+                        <p className="text-[10px] text-slate-500 leading-relaxed font-medium">
+                            SkillQuest isn't just a platform; it's a <span className="text-indigo-300">distributed neural learning network</span> designed to bypass traditional education bottlenecks. By mapping real-world engineering concepts to tactical missions, we achieve 4x faster skill retention.
+                        </p>
+                        <div className="h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
+                        <div className="flex items-center justify-between text-[8px] font-black text-slate-600 uppercase tracking-widest">
+                            <span>Hash: SQ_0x78f2</span>
+                            <span>Node: Bangalore_Central</span>
+                        </div>
+                    </motion.div>
+
+
                 </div>
             </div>
 
