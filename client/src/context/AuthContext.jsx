@@ -27,8 +27,36 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
+        // Initial check
         checkUser();
-    }, []);
+
+        // 1. GLOBAL INTERCEPTOR: Handle 401/Invalid Sessions immediately
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response && error.response.status === 401) {
+                    console.warn('Session Invalidated or Expired. Logging out...');
+                    setUser(null);
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        // 2. PERIODIC SYNC: Check every 30 seconds for external logouts
+        const interval = setInterval(() => {
+            if (user && !loading) {
+                // Background check without setting global loading state to avoid UI flashes
+                axios.get(`${API_URL}/auth/me`)
+                    .then(res => setUser(res.data))
+                    .catch(() => setUser(null));
+            }
+        }, 30000);
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+            clearInterval(interval);
+        };
+    }, [user?._id]); // Re-run if user ID changes
 
     const login = async (identity, password) => {
         const res = await axios.post(`${API_URL}/auth/login`, { identity, password });
