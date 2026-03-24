@@ -15,7 +15,6 @@ const Navbar = () => {
         { path: '/boss-battle', label: 'THE ARENA', icon: <Sword size={18} /> },
         { path: '/roadmap', label: 'QUEST LOG', icon: <TrendingUp size={18} /> },
         { path: '/leaderboard', label: 'RANKINGS', icon: <Trophy size={18} /> },
-        { path: '/card-clash', label: 'THE CLASH', icon: <Sparkles size={18} /> },
     ];
 
     return (
