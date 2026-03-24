@@ -7,6 +7,8 @@ const morgan = require('morgan');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const passport = require('passport');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 // Load passport config
 require('./config/passport');
@@ -53,6 +55,18 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: 'SkillQuest API Docs',
+    customfavIcon: 'https://skillquest-08ht.onrender.com/favicon.ico',
+    customCss: `
+        .swagger-ui .topbar { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+        .swagger-ui .topbar-wrapper img { content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23a78bfa"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'); height: 36px; }
+        .swagger-ui .info .title { color: #a78bfa; font-size: 2rem; }
+        .swagger-ui .scheme-container { background: #1a1a2e; padding: 16px; border-radius: 8px; }
+    `
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);
