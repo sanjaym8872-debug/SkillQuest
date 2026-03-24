@@ -31,6 +31,7 @@ router.post('/register', async (req, res) => {
             password: hashedPassword
         });
 
+        user.currentSessionId = req.sessionID;
         await user.save();
 
         // Auto login after registration
@@ -59,6 +60,7 @@ router.post('/login', async (req, res) => {
 
         const { applySkillDecay } = require('../utils/gameLogic');
         applySkillDecay(user);
+        user.currentSessionId = req.sessionID;
         await user.save();
 
         req.session.userId = user._id;
@@ -92,6 +94,16 @@ router.get('/me', async (req, res) => {
             .select('-password')
             .populate('badges.badgeId');
 
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // SECURITY: Single Session Policy check
+        if (user.currentSessionId && user.currentSessionId !== req.sessionID) {
+            return req.session.destroy(() => {
+                res.clearCookie('connect.sid');
+                res.status(401).json({ message: 'Session invalidated: logged in from elsewhere' });
+            });
+        }
+
         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         res.json(user);
     } catch (err) {
@@ -110,10 +122,13 @@ router.get('/google', passport.authenticate('google', {
 // Google Auth Callback
 router.get('/google/callback', 
     passport.authenticate('google', { failureRedirect: process.env.CLIENT_URL + '/login' }),
-    (req, res) => {
-        // Successful authentication, set session userId since that's what other parts of the app use
+    async (req, res) => {
+        // Successful authentication
         if (req.user) {
             req.session.userId = req.user._id;
+            // Update currentSessionId for Single Session Policy
+            req.user.currentSessionId = req.sessionID;
+            await req.user.save();
         }
         res.redirect(process.env.CLIENT_URL + '/');
     }

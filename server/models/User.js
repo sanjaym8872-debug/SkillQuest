@@ -49,7 +49,8 @@ const UserSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     completedSteps: [{ type: Number }], // IDs of completed daily tasks
     lastSyncAt: { type: Date, default: Date.now }
-  }
+  },
+  currentSessionId: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);
