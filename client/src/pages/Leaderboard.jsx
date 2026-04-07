@@ -46,13 +46,13 @@ const Leaderboard = () => {
                 <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">The world's most elite skill warriors</p>
             </motion.div>
 
-            {/* Category Selector Tabs */}
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {/* Category Selector Tabs - Scrollable on Mobile */}
+            <div className="flex flex-nowrap overflow-x-auto md:flex-wrap justify-start md:justify-center gap-2 mb-8 pb-4 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                 {CLASSES.map((cls) => (
                     <button
                         key={cls}
                         onClick={() => setSelectedClass(cls)}
-                        className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedClass === cls
+                        className={`whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedClass === cls
                             ? 'bg-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
                             : (theme === 'light' ? 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-200 shadow-sm' : 'bg-slate-900/50 text-slate-500 hover:text-slate-300 hover:bg-slate-800')
                             }`}
@@ -82,43 +82,45 @@ const Leaderboard = () => {
                                         'border-l-4 border-transparent'
                                 }`}
                         >
-                            <div className="flex items-center gap-6">
-                                <div className="w-12 flex justify-center items-center">
-                                    {index === 0 ? <Crown className="text-amber-400 drop-shadow-glow" size={32} /> :
-                                        index === 1 ? <Medal className="text-slate-300" size={28} /> :
-                                            index === 2 ? <Medal className="text-amber-700" size={24} /> :
-                                                <span className={`text-xl font-black ${theme === 'light' ? 'text-slate-300' : 'text-slate-700'} font-mono`}>#{index + 1}</span>}
-                                </div>
-
-                                <div className="relative">
-                                    <div className={`absolute -inset-1 blur-md transition-opacity opacity-0 group-hover:opacity-100 ${index === 0 ? 'bg-amber-500' : 'bg-indigo-500'
-                                        }`}></div>
-                                    <img
-                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${player.username}&mouth=smile`}
-                                        alt=""
-                                        className={`relative w-14 h-14 rounded-2xl bg-slate-950 border-2 ${theme === 'light' ? 'border-slate-100' : 'border-slate-800'} p-1 object-cover`}
-                                    />
-                                    {index === 0 && (
-                                        <div className="absolute -top-1 -right-1 bg-amber-500 p-1 rounded-full border-2 border-slate-900">
-                                            <Zap size={8} className="text-white fill-white" />
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`font-black uppercase tracking-tighter text-xl ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{player.username}</div>
-                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase ${theme === 'light' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'bg-slate-800 text-slate-500'}`}>LVL {player.level}</span>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                                <div className="flex items-center gap-4 sm:gap-6 flex-1">
+                                    <div className="w-8 sm:w-12 flex justify-center items-center shrink-0">
+                                        {index === 0 ? <Crown className="text-amber-400 drop-shadow-glow" size={24} /> :
+                                            index === 1 ? <Medal className="text-slate-300" size={20} /> :
+                                                index === 2 ? <Medal className="text-amber-700" size={18} /> :
+                                                    <span className={`text-md sm:text-xl font-black ${theme === 'light' ? 'text-slate-300' : 'text-slate-700'} font-mono`}>#{index + 1}</span>}
                                     </div>
-                                    <div className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mt-1 opacity-70">{player.characterClass || 'Apprentice'}</div>
+
+                                    <div className="relative shrink-0">
+                                        <div className={`absolute -inset-1 blur-md transition-opacity opacity-0 group-hover:opacity-100 ${index === 0 ? 'bg-amber-500' : 'bg-indigo-500'
+                                            }`}></div>
+                                        <img
+                                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${player.username}&mouth=smile`}
+                                            alt=""
+                                            className={`relative w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-slate-950 border-2 ${theme === 'light' ? 'border-slate-100' : 'border-slate-800'} p-1 object-cover`}
+                                        />
+                                        {index === 0 && (
+                                            <div className="absolute -top-1 -right-1 bg-amber-500 p-0.5 rounded-full border-2 border-slate-900">
+                                                <Zap size={6} className="text-white fill-white" />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                                            <div className={`font-black uppercase tracking-tighter text-md sm:text-xl truncate ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{player.username}</div>
+                                            <span className={`text-[8px] sm:text-[10px] font-black px-1.5 py-0.5 rounded uppercase ${theme === 'light' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'bg-slate-800 text-slate-500'}`}>LVL {player.level}</span>
+                                        </div>
+                                        <div className="text-[8px] sm:text-[10px] text-indigo-400 font-black uppercase tracking-widest mt-0.5 sm:mt-1 opacity-70 truncate">{player.characterClass || 'Apprentice'}</div>
+                                    </div>
                                 </div>
 
-                                <div className="text-right space-y-1">
-                                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Power Score</div>
-                                    <div className="flex items-center justify-end gap-2 text-2xl font-black italic">
+                                <div className="text-left sm:text-right space-y-0.5 sm:space-y-1 pl-12 sm:pl-0">
+                                    <div className="text-[8px] sm:text-[10px] font-black text-slate-500 uppercase tracking-widest">Power Score</div>
+                                    <div className="flex items-center sm:justify-end gap-1.5 sm:gap-2 text-lg sm:text-2xl font-black italic">
                                         <span className={`${index === 0 ? 'text-amber-400' : (theme === 'light' ? 'text-slate-900' : 'text-white')
                                             }`}>{player.xp.toLocaleString()}</span>
-                                        <Star size={14} className="text-amber-500 fill-amber-500" />
+                                        <Star size={12} className="text-amber-500 fill-amber-500" />
                                     </div>
                                 </div>
                             </div>

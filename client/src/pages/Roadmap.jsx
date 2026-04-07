@@ -127,7 +127,7 @@ const Roadmap = () => {
     );
 
     return (
-        <div className="space-y-12 max-w-5xl mx-auto pb-20">
+        <div className="space-y-12 max-w-5xl mx-auto pb-20 px-4 md:px-6">
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -148,20 +148,20 @@ const Roadmap = () => {
             <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-slate-900/40 rounded-[3rem] p-12 border border-white/5 shadow-3xl relative overflow-hidden backdrop-blur-xl"
+                className="bg-slate-900/40 rounded-3xl md:rounded-[3rem] p-6 sm:p-8 md:p-12 border border-white/5 shadow-3xl relative overflow-hidden backdrop-blur-xl"
             >
                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
                     <Target size={200} className="text-white" />
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 relative z-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-16 relative z-10">
                     <div className="space-y-4">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 rounded-full border border-indigo-500/20 shadow-inner">
                             <Zap size={14} className="text-indigo-400 fill-indigo-400/20" />
                             <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-none">Career Progression</span>
                         </div>
-                        <h2 className="text-5xl font-[1000] text-white italic tracking-tighter uppercase leading-none">Specialization Dossier</h2>
-                        <p className="text-slate-500 font-bold uppercase tracking-[0.4em] text-xs">Strategic Roadmap for {user?.characterClass}</p>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-[1000] text-white italic tracking-tighter uppercase leading-none">Specialization Dossier</h2>
+                        <p className="text-slate-500 font-bold uppercase tracking-[0.4em] text-[10px] sm:text-xs">Strategic Roadmap for {user?.characterClass}</p>
                     </div>
                 </div>
 
@@ -185,7 +185,7 @@ const Roadmap = () => {
                                         navigate(`/bird-game/${skillName}`);
                                     }
                                 }}
-                                className={`p-8 rounded-[2.5rem] border transition-all duration-500 cursor-pointer group/node relative overflow-hidden flex flex-col h-full ${
+                                className={`p-6 sm:p-8 rounded-3xl border transition-all duration-500 cursor-pointer group/node relative overflow-hidden flex flex-col h-full ${
                                     isUnlocked 
                                     ? 'bg-slate-950/60 border-indigo-500/20 hover:border-indigo-500/50 hover:bg-slate-950 shadow-2xl shadow-indigo-500/5' 
                                     : 'bg-slate-950/20 border-white/[0.05] hover:border-indigo-500/30 hover:bg-slate-900/40'

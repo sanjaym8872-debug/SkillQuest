@@ -75,16 +75,16 @@
 }
 
 [data-theme="light"] {
-  --game-bg: #f8fafc;
+  --game-bg: #f1f5f9;
   --game-text: #334155;
   --game-text-heading: #0f172a;
   --game-text-muted: #64748b;
   --game-text-dim: #94a3b8;
-  --card-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(226, 232, 240, 0.8);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(148, 163, 184, 0.3);
   --glow-primary: rgba(99, 102, 241, 0.1);
   --glow-secondary: rgba(168, 85, 247, 0.08);
-  --grid-color: rgba(99, 102, 241, 0.03);
+  --grid-color: rgba(99, 102, 241, 0.04);
 }
 
 [data-theme="light"] .text-white {
@@ -99,19 +99,21 @@
   color: var(--game-text-muted) !important;
 }
 
+[data-theme="light"] .text-slate-300,
 [data-theme="light"] .text-slate-200 {
   color: var(--game-text) !important;
 }
 
-/* Ensure dark components keep their white text in light mode */
-[data-theme="light"] .bg-slate-950 .text-white,
-[data-theme="light"] [class*="bg-[#05070a]"] .text-white,
-[data-theme="light"] .bg-black\/60 .text-white {
-  color: white !important;
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-50 {
+  color: var(--game-text-heading) !important;
 }
+
+
 
 [data-theme="light"] .bg-slate-950 {
   background-color: #ffffff !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
 [data-theme="light"] .bg-slate-900 {
@@ -123,18 +125,65 @@
 }
 
 [data-theme="light"] .border-slate-800 {
-  border-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .border-slate-800\/50,
+[data-theme="light"] .border-white\/5,
+[data-theme="light"] .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.1) !important;
 }
 
 [data-theme="light"] .border-slate-700 {
   border-color: #cbd5e1 !important;
 }
 
+[data-theme="light"] .bg-slate-900\/50,
 [data-theme="light"] .bg-slate-900\/40,
+[data-theme="light"] .bg-slate-900\/20,
 [data-theme="light"] .bg-slate-800\/40,
 [data-theme="light"] .bg-slate-800\/30 {
   background-color: rgba(255, 255, 255, 0.5) !important;
   backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .bg-slate-900\/80 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] [class*="border-white\/"] {
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+[data-theme="light"] .bg-slate-950\/20,
+[data-theme="light"] .bg-slate-950\/40,
+[data-theme="light"] .bg-slate-950\/50,
+[data-theme="light"] .bg-slate-950\/60,
+[data-theme="light"] .bg-slate-950\/90,
+[data-theme="light"] .bg-black\/20,
+[data-theme="light"] .bg-black\/40,
+[data-theme="light"] .bg-black\/50,
+[data-theme="light"] .bg-black\/60 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+
+[data-theme="light"] .bg-\[\#020617\],
+[data-theme="light"] .bg-\[\#0b0f1a\] {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .bg-\[\#020617\]\/60 {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme="light"] .bg-\[\#020617\]\/90,
+[data-theme="light"] .bg-\[\#020617\]\/95 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
 }
 
 [data-theme="light"] .game-card {
@@ -237,6 +286,13 @@ body {
     inset 0 0 20px rgba(255, 255, 255, 0.02);
   position: relative;
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .game-card {
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+  }
 }
 
 .game-card::before {

@@ -186,7 +186,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
                         <div className="game-card p-4 min-w-[110px] text-center group cursor-help transition-all hover:bg-emerald-500/5 hover:border-emerald-500/30" title="Sync Rate: Multiplier for XP gains based on consistency.">
                             <Activity className="w-6 h-6 text-emerald-500 mx-auto mb-2 drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]" />
                             <div className="text-[9px] uppercase font-black text-slate-500 tracking-widest">Sync Rate</div>
@@ -240,7 +240,7 @@ const Dashboard = () => {
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    className="h-[450px] w-full flex items-center justify-center relative"
+                                    className="h-[300px] md:h-[450px] w-full flex items-center justify-center relative"
                                 >
                                     <ResponsiveContainer width="100%" height="100%">
                                         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={skillData}>
