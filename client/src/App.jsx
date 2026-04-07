@@ -13,6 +13,7 @@ import DailySpikeGame from './pages/DailySpikeGame';
 import TerminalVelocity from './pages/TerminalVelocity';
 import BalloonSurvival from './pages/BalloonSurvival';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -41,6 +42,7 @@ const ProtectedLayout = ({ children }) => {
       <main className="pt-24 px-4 pb-8 max-w-7xl mx-auto w-full flex-grow relative">
         {children}
       </main>
+      <Footer />
     </div>
   );
 };

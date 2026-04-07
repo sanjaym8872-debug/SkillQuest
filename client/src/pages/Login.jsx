@@ -228,6 +228,13 @@ const Login = () => {
                 </div>
                 <span className="text-[8px] font-mono tracking-widest opacity-30">SECURE_CHANNEL_v4.2.0</span>
             </div>
+
+            {/* Global Footer Copyright */}
+            <div className="absolute bottom-10 w-full text-center pointer-events-none z-20">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] opacity-50">
+                    © {new Date().getFullYear()} SKILL QUEST. ALL NEURAL RIGHTS RESERVED.
+                </p>
+            </div>
         </div>
     );
 };

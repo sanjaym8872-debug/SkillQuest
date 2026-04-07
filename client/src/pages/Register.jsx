@@ -380,6 +380,13 @@ const Register = () => {
                 </div>
             </motion.div>
 
+            {/* Global Footer Copyright */}
+            <div className="absolute bottom-10 w-full text-center pointer-events-none z-20">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] opacity-50">
+                    © {new Date().getFullYear()} SKILL QUEST. ALL NEURAL RIGHTS RESERVED.
+                </p>
+            </div>
+
             {/* Micro-decorations */}
             <div className="fixed top-6 right-6 flex flex-col items-end gap-1 text-slate-600/30 font-mono text-[8px] tracking-[0.4em] pointer-events-none uppercase">
                 <span>Registration_Link_Active</span>
