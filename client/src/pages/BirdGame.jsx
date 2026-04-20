@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Trophy, Zap, AlertTriangle, Skull, Ship, Star, Clock, ArrowLeft } from 'lucide-react';
 
@@ -16,6 +17,8 @@ const BirdGame = () => {
     const { skill } = useParams();
     const navigate = useNavigate();
     const { checkUser } = useAuth();
+    const { theme } = useTheme();
+    const isLight = theme === 'light';
 
     // Game State
     const [runId, setRunId] = useState(null);
@@ -273,20 +276,33 @@ const BirdGame = () => {
                 </div>
             </div>
 
-            {/* Game Canvas Overlay */}
+            {/* Game Canvas */}
             <div
                 ref={gameContainerRef}
                 onClick={handleJump}
-                className="relative h-[500px] w-full bg-slate-950 rounded-[40px] border-4 border-slate-900 overflow-hidden cursor-pointer shadow-2xl"
+                className="relative h-[500px] w-full overflow-hidden cursor-pointer"
                 style={{
-                    background: 'linear-gradient(to bottom, #020617, #0f172a, #1a2e5a)',
+                    background: isLight
+                        ? 'linear-gradient(160deg, #edeef8 0%, #e8eaf6 50%, #ece8f8 100%)'
+                        : 'linear-gradient(to bottom, #020617, #0f172a, #1a2e5a)',
+                    borderRadius: '2.5rem',
+                    border: isLight
+                        ? '2px solid rgba(99,102,241,0.2)'
+                        : '4px solid #0f172a',
+                    boxShadow: isLight
+                        ? '0 20px 60px -10px rgba(99,102,241,0.2), 0 4px 16px rgba(0,0,0,0.05)'
+                        : '0 25px 60px rgba(0,0,0,0.5)',
                 }}
             >
-                {/* Visual Decorations */}
-                <div className="absolute inset-0 opacity-10 pointer-events-none">
+                {/* Visual Grid Decorations */}
+                <div className="absolute inset-0 pointer-events-none"
+                    style={{ opacity: isLight ? 0.6 : 0.1 }}
+                >
                     <div className="grid grid-cols-12 h-full w-full">
                         {Array.from({ length: 48 }).map((_, i) => (
-                            <div key={i} className="border-[0.5px] border-indigo-500/20"></div>
+                            <div key={i} style={{
+                                border: `0.5px solid ${isLight ? 'rgba(99,102,241,0.12)' : 'rgba(99,102,241,0.2)'}`,
+                            }} />
                         ))}
                     </div>
                 </div>
@@ -329,9 +345,25 @@ const BirdGame = () => {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="absolute inset-0 z-50 flex items-center justify-center p-8 backdrop-blur-sm bg-slate-950/60"
+                            className="absolute inset-0 z-50 flex items-center justify-center p-8"
+                            style={{
+                                backdropFilter: 'blur(8px)',
+                                background: isLight
+                                    ? 'rgba(232,232,248,0.75)'
+                                    : 'rgba(2,6,23,0.6)',
+                            }}
                         >
-                            <div className="game-card max-w-lg w-full p-8 space-y-6 border-white/10 shadow-3xl">
+                            <div
+                                className="max-w-lg w-full p-8 space-y-6 rounded-[2.5rem]"
+                                style={{
+                                    background: isLight ? 'rgba(255,255,255,0.92)' : 'rgba(17,24,39,0.85)',
+                                    border: isLight ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(255,255,255,0.08)',
+                                    boxShadow: isLight
+                                        ? '0 20px 60px rgba(99,102,241,0.15)'
+                                        : '0 20px 60px rgba(0,0,0,0.4)',
+                                    backdropFilter: 'blur(20px)',
+                                }}
+                            >
                                 <div className="flex justify-between items-center">
                                     <div className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${currentQuestion.objectType === 'fruit' ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400' : 'bg-red-500/10 border-red-500 text-red-500'
                                         }`}>
@@ -343,34 +375,71 @@ const BirdGame = () => {
                                     </div>
                                 </div>
 
-                                <h3 className="text-xl font-black text-white leading-relaxed">
-                                    {currentQuestion.question}
-                                </h3>
+                                <h3
+                                        className="text-xl font-black leading-relaxed"
+                                        style={{ color: isLight ? '#0d1321' : '#ffffff' }}
+                                    >
+                                        {currentQuestion.question}
+                                    </h3>
 
-                                <div className="grid grid-cols-1 gap-3">
-                                    {currentQuestion.options.map((option, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={(e) => { e.stopPropagation(); submitAnswer(idx); }}
-                                            disabled={!!feedback}
-                                            className={`
-                                                p-4 rounded-2xl border-2 text-left text-sm font-bold transition-all
-                                                ${selectedAnswer === idx ? (feedback === 'correct' ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-red-500 bg-red-500/10 text-red-500')
-                                                    : 'border-slate-800 bg-slate-900 hover:border-indigo-500/50 text-slate-300'}
-                                            `}
-                                        >
-                                            {option}
-                                        </button>
-                                    ))}
+                                    <div className="grid grid-cols-1 gap-3">
+                                        {currentQuestion.options.map((option, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={(e) => { e.stopPropagation(); submitAnswer(idx); }}
+                                                disabled={!!feedback}
+                                                className="p-4 rounded-2xl text-left text-sm font-bold transition-all"
+                                                style={{
+                                                    border: selectedAnswer === idx
+                                                        ? (feedback === 'correct' ? '2px solid #10b981' : '2px solid #ef4444')
+                                                        : isLight ? '1.5px solid rgba(99,102,241,0.25)' : '2px solid #1e293b',
+                                                    background: selectedAnswer === idx
+                                                        ? (feedback === 'correct' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)')
+                                                        : isLight ? 'rgba(238,240,246,0.8)' : '#0f172a',
+                                                    color: selectedAnswer === idx
+                                                        ? (feedback === 'correct' ? '#10b981' : '#ef4444')
+                                                        : isLight ? '#1e293b' : '#cbd5e1',
+                                                }}
+                                                onMouseEnter={e => {
+                                                    if (selectedAnswer === null)
+                                                        e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
+                                                }}
+                                                onMouseLeave={e => {
+                                                    if (selectedAnswer === null)
+                                                        e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.25)' : '#1e293b';
+                                                }}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
             </div>
 
-            <div className="text-center text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">
-                Tip: Press <span className="bg-slate-800 px-2 py-1 rounded text-slate-300">Space</span> or <span className="bg-slate-800 px-2 py-1 rounded text-slate-300">Click</span> to flutter your core
+            <div
+                className="text-center text-xs font-bold uppercase tracking-[0.2em]"
+                style={{ color: isLight ? 'rgba(99,102,241,0.5)' : '#64748b' }}
+            >
+                Tip: Press
+                <span
+                    className="px-2 py-1 rounded mx-1"
+                    style={{
+                        background: isLight ? 'rgba(99,102,241,0.1)' : '#1e293b',
+                        color: isLight ? '#6366f1' : '#cbd5e1',
+                    }}
+                >Space</span>
+                or
+                <span
+                    className="px-2 py-1 rounded mx-1"
+                    style={{
+                        background: isLight ? 'rgba(99,102,241,0.1)' : '#1e293b',
+                        color: isLight ? '#6366f1' : '#cbd5e1',
+                    }}
+                >Click</span>
+                to flutter your core
             </div>
         </div>
     );

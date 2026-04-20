@@ -15,13 +15,17 @@ router.post('/start/:skill', checkAuth, async (req, res) => {
         const { skill } = req.params;
         const userId = req.session.userId;
 
-        const questions = await Question.aggregate([
+        let questions = await Question.aggregate([
             { $match: { skill: new RegExp(`^${skill}$`, 'i') } },
             { $sample: { size: 10 } }
         ]);
 
-        if (questions.length === 0) {
-            const fallback = await Question.aggregate([{ $sample: { size: 10 } }]);
+        // If we don't have enough questions for a full 10-question run, fill the gap with random questions
+        if (questions.length < 10) {
+            const fallback = await Question.aggregate([
+                { $match: { _id: { $nin: questions.map(q => q._id) } } }, // avoid duplicates
+                { $sample: { size: 10 - questions.length } }
+            ]);
             questions.push(...fallback);
         }
 

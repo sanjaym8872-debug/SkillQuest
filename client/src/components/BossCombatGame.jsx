@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Zap, Skull, Timer, Target, Rocket, Activity, AlertCircle, Cpu, ChevronRight, Gamepad2, Play } from 'lucide-react';
 import axios from 'axios';
+import { useTheme } from '../context/ThemeContext';
 
 const BossCombatGame = ({ boss, onFinish, userClass }) => {
+    const { theme } = useTheme();
+    const isLight = theme === 'light';
     // Game Constants (Internal Coordinates 0-100)
     const PLAYER_Y = 90;
     const ENEMY_HEIGHT = 10;
@@ -229,26 +232,55 @@ const BossCombatGame = ({ boss, onFinish, userClass }) => {
 
     const HUDLabel = ({ text, subtext, align = "left", color = "indigo" }) => (
         <div className={`flex flex-col ${align === "right" ? "items-end text-right" : "items-start"}`}>
-            <span className={`text-[10px] font-black uppercase tracking-[0.2em] text-${color}-500/60 mb-1`}>{text}</span>
-            <div className={`text-3xl font-black italic tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]`}>
+            <span className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1`}
+                style={{ color: isLight ? `rgba(99,102,241,0.7)` : `rgba(99,102,241,0.6)` }}>
+                {text}
+            </span>
+            <div className="text-3xl font-black italic tracking-tighter"
+                style={{ color: isLight ? '#0d1321' : '#ffffff' }}>
                 {subtext}
             </div>
         </div>
     );
 
     return (
-        <div className="w-full max-w-5xl h-[650px] bg-slate-950 rounded-[40px] border-4 border-slate-900 overflow-hidden relative shadow-3xl text-white select-none">
+        <div
+            className="w-full max-w-5xl h-[650px] rounded-[40px] overflow-hidden relative shadow-2xl select-none"
+            style={{
+                background: isLight ? '#eeeef8' : '#020609',
+                border: isLight ? '2px solid rgba(99,102,241,0.2)' : '4px solid #0f172a',
+                boxShadow: isLight
+                    ? '0 20px 60px -10px rgba(99,102,241,0.2), 0 4px 16px rgba(0,0,0,0.06)'
+                    : '0 25px 80px rgba(0,0,0,0.7)',
+            }}
+        >
             {/* Neural Background Layer */}
-            <div className="absolute inset-0 bg-[#05070a]">
-                <div className="absolute inset-0 opacity-20 pointer-events-none"
-                    style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #4f46e5 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-indigo-950/20 via-transparent to-transparent" />
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+            <div
+                className="absolute inset-0"
+                style={{ background: isLight
+                    ? 'linear-gradient(135deg, #edeef8 0%, #e8eaf6 50%, #ece8f8 100%)'
+                    : '#05070a'
+                }}
+            >
+                <div className="absolute inset-0 pointer-events-none"
+                    style={{
+                        backgroundImage: `radial-gradient(circle at 2px 2px, ${isLight ? 'rgba(99,102,241,0.15)' : '#4f46e5'} 1px, transparent 0)`,
+                        backgroundSize: '40px 40px',
+                        opacity: isLight ? 1 : 0.2,
+                    }} />
+                <div className="absolute inset-0"
+                    style={{ background: isLight
+                        ? 'linear-gradient(to top, rgba(99,102,241,0.05) 0%, transparent 60%)'
+                        : 'linear-gradient(to top, rgba(79,70,229,0.2) 0%, transparent 60%)'
+                    }} />
+                <div className="absolute inset-x-0 top-0 h-px"
+                    style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.4), transparent)' }} />
                 {/* Horizontal Scanline */}
                 <motion.div
                     animate={{ top: ['0%', '100%'] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-x-0 h-[2px] bg-indigo-500/10 z-10 pointer-events-none"
+                    className="absolute inset-x-0 h-[2px] z-10 pointer-events-none"
+                    style={{ background: isLight ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.1)' }}
                 />
             </div>
 
@@ -292,14 +324,27 @@ const BossCombatGame = ({ boss, onFinish, userClass }) => {
                             className="absolute inset-0 flex items-center justify-center z-40 p-12"
                         >
                             <div className="relative group max-w-md w-full">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[40px] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                                <div className="relative bg-black/60 backdrop-blur-3xl p-10 rounded-[40px] border border-white/10 text-center space-y-8">
+                                <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[40px] blur opacity-25 group-hover:opacity-50 transition duration-1000" />
+                                <div
+                                    className="relative p-10 rounded-[40px] text-center space-y-8"
+                                    style={{
+                                        background: isLight ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.65)',
+                                        border: isLight ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(255,255,255,0.1)',
+                                        backdropFilter: 'blur(24px)',
+                                    }}
+                                >
                                     <div className="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto border border-indigo-500/20">
                                         <Rocket size={40} className="text-indigo-400" />
                                     </div>
                                     <div className="space-y-3">
-                                        <h3 className="text-4xl font-black tracking-tighter italic uppercase text-white">Initialize Link</h3>
-                                        <p className="text-slate-400 text-xs font-medium leading-relaxed uppercase tracking-wider">
+                                        <h3
+                                            className="text-4xl font-black tracking-tighter italic uppercase"
+                                            style={{ color: isLight ? '#0d1321' : '#ffffff' }}
+                                        >Initialize Link</h3>
+                                        <p
+                                            className="text-xs font-medium leading-relaxed uppercase tracking-wider"
+                                            style={{ color: isLight ? '#475569' : '#94a3b8' }}
+                                        >
                                             Tactical Interface v2.4 initialized.<br />
                                             Objective: Defend neural core via pulse logic.<br />
                                             Inputs: <span className="text-indigo-400">ARROWS</span> to move, <span className="text-indigo-400">SPACE</span> to fire.
@@ -307,7 +352,13 @@ const BossCombatGame = ({ boss, onFinish, userClass }) => {
                                     </div>
                                     <button
                                         onClick={() => setGameState('playing')}
-                                        className="w-full bg-white text-black py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-400 transition-colors shadow-2xl"
+                                        className="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:opacity-90 transition-all shadow-xl"
+                                        style={{
+                                            background: isLight
+                                                ? 'linear-gradient(135deg, #6366f1, #a855f7)'
+                                                : '#ffffff',
+                                            color: isLight ? '#ffffff' : '#000000',
+                                        }}
                                     >
                                         Establish Connection
                                     </button>
@@ -322,11 +373,25 @@ const BossCombatGame = ({ boss, onFinish, userClass }) => {
                             {renderEnemies.map(e => (
                                 <motion.div
                                     key={e.id}
-                                    style={{ left: `${e.x}%`, top: `${e.y}%`, width: `${ENEMY_WIDTH}%`, height: `${ENEMY_HEIGHT}%`, transform: 'translateX(-50%)' }}
-                                    className="absolute bg-slate-900 border-2 border-indigo-500/30 rounded-2xl shadow-xl flex items-center justify-center p-3 text-center overflow-hidden"
+                                    style={{
+                                        left: `${e.x}%`, top: `${e.y}%`,
+                                        width: `${ENEMY_WIDTH}%`, height: `${ENEMY_HEIGHT}%`,
+                                        transform: 'translateX(-50%)',
+                                        background: isLight ? 'rgba(255,255,255,0.85)' : '#0f172a',
+                                        border: isLight ? '1.5px solid rgba(99,102,241,0.3)' : '2px solid rgba(99,102,241,0.3)',
+                                        backdropFilter: 'blur(8px)',
+                                        boxShadow: isLight
+                                            ? '0 4px 12px rgba(99,102,241,0.1)'
+                                            : '0 4px 20px rgba(0,0,0,0.4)',
+                                    }}
+                                    className="absolute rounded-2xl shadow-xl flex items-center justify-center p-3 text-center overflow-hidden"
                                 >
-                                    <span className="text-[9px] font-black text-white uppercase leading-tight line-clamp-3">{e.text}</span>
-                                    <div className="absolute inset-x-0 bottom-0 h-1 bg-indigo-500/20" />
+                                    <span
+                                        className="text-[9px] font-black uppercase leading-tight line-clamp-3"
+                                        style={{ color: isLight ? '#1e293b' : '#ffffff' }}
+                                    >{e.text}</span>
+                                    <div className="absolute inset-x-0 bottom-0 h-1"
+                                        style={{ background: isLight ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.2)' }} />
                                 </motion.div>
                             ))}
 
@@ -360,16 +425,23 @@ const BossCombatGame = ({ boss, onFinish, userClass }) => {
                     {(gameState === 'won' || gameState === 'lost') && (
                         <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                            className="absolute inset-0 flex items-center justify-center z-50 bg-black/40 backdrop-blur-md p-10"
+                            className="absolute inset-0 flex items-center justify-center z-50 p-10"
+                            style={{
+                                background: isLight ? 'rgba(232,232,248,0.7)' : 'rgba(0,0,0,0.4)',
+                                backdropFilter: 'blur(12px)',
+                            }}
                         >
                             <div className="relative flex flex-col items-center max-w-lg w-full">
-                                {/* Result Glow Background */}
                                 <div className={`absolute inset-0 blur-[100px] opacity-20 ${gameState === 'won' ? 'bg-emerald-500' : 'bg-red-600'}`} />
 
-                                <div className="relative w-full bg-[#0d1117] border border-white/5 p-12 rounded-[50px] overflow-hidden shadow-3xl flex flex-col items-center">
-                                    {/* Scanline Overlay */}
-                                    <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
-
+                                <div
+                                    className="relative w-full p-12 rounded-[50px] overflow-hidden flex flex-col items-center"
+                                    style={{
+                                        background: isLight ? 'rgba(255,255,255,0.92)' : '#0d1117',
+                                        border: isLight ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(255,255,255,0.05)',
+                                        boxShadow: isLight ? '0 20px 60px rgba(99,102,241,0.15)' : 'none',
+                                    }}
+                                >
                                     <motion.div
                                         initial={{ scale: 0.5, rotate: -20 }} animate={{ scale: 1, rotate: 0 }}
                                         className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-10 ${gameState === 'won' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/50' : 'bg-red-500/10 text-red-500 border border-red-500/50'}`}
@@ -377,27 +449,48 @@ const BossCombatGame = ({ boss, onFinish, userClass }) => {
                                         {gameState === 'won' ? <Target size={48} /> : <Skull size={48} />}
                                     </motion.div>
 
-                                    <h2 className="text-5xl font-black uppercase italic tracking-[0.05em] text-white text-center leading-none mb-10">
+                                    <h2
+                                        className="text-5xl font-black uppercase italic tracking-[0.05em] text-center leading-none mb-10"
+                                        style={{ color: isLight ? '#0d1321' : '#ffffff' }}
+                                    >
                                         {gameState === 'won' ? 'Neural Link Verified' : 'Neural Link Unstable'}
                                     </h2>
 
-                                    <div className="w-full flex justify-between items-center px-4 py-8 border-y border-white/5 mb-10">
+                                    <div
+                                        className="w-full flex justify-between items-center px-4 py-8 mb-10"
+                                        style={{
+                                            borderTop: isLight ? '1px solid rgba(99,102,241,0.15)' : '1px solid rgba(255,255,255,0.05)',
+                                            borderBottom: isLight ? '1px solid rgba(99,102,241,0.15)' : '1px solid rgba(255,255,255,0.05)',
+                                        }}
+                                    >
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Final Gain</span>
-                                            <span className="text-4xl font-black italic text-white">{score}</span>
+                                            <span
+                                                className="text-[10px] font-black uppercase tracking-widest mb-1"
+                                                style={{ color: isLight ? '#6366f1' : 'rgba(255,255,255,0.3)' }}
+                                            >Final Gain</span>
+                                            <span
+                                                className="text-4xl font-black italic"
+                                                style={{ color: isLight ? '#0d1321' : '#ffffff' }}
+                                            >{score}</span>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">Session Status</span>
+                                            <span
+                                                className="text-[10px] font-black uppercase tracking-widest mb-1"
+                                                style={{ color: isLight ? '#6366f1' : 'rgba(255,255,255,0.3)' }}
+                                            >Session Status</span>
                                             <div className={`text-sm font-black uppercase italic ${gameState === 'won' ? 'text-emerald-500' : 'text-red-500'}`}>
                                                 {feedback?.text.split(':')[0] || (gameState === 'won' ? 'Complete' : 'Re-Calibrating')}
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 text-white/40">
-                                        <div className="w-8 h-px bg-white/10" />
+                                    <div
+                                        className="flex items-center gap-3"
+                                        style={{ color: isLight ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.4)' }}
+                                    >
+                                        <div className="w-8 h-px" style={{ background: isLight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.1)' }} />
                                         <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Press Space to Return</span>
-                                        <div className="w-8 h-px bg-white/10" />
+                                        <div className="w-8 h-px" style={{ background: isLight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.1)' }} />
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +512,15 @@ const BossCombatGame = ({ boss, onFinish, userClass }) => {
             </AnimatePresence>
 
             {/* Tactical Footer */}
-            <div className="absolute bottom-4 inset-x-0 px-10 flex justify-between items-center text-[10px] font-black text-white/20 uppercase tracking-[0.3em] py-4 bg-gradient-to-t from-black/80 to-transparent">
+            <div
+                className="absolute bottom-4 inset-x-0 px-10 flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] py-4"
+                style={{
+                    background: isLight
+                        ? 'linear-gradient(to top, rgba(225,227,248,0.9), transparent)'
+                        : 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
+                    color: isLight ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.2)',
+                }}
+            >
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-indigo-500 animate-ping" />

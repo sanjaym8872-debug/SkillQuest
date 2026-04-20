@@ -54,11 +54,13 @@ const BalloonSurvival = () => {
         setSelectedAnswer(index);
         try {
             const res = await axios.post(`${API_URL}/balloon/answer/${runId}`, { selectedIndex: index });
+            
+            // Update run state immediately so animations (popping, altitude) sync with feedback
+            setRunState(res.data.state);
             setFeedback(res.data);
             setGameState('FEEDBACK');
 
             setTimeout(() => {
-                setRunState(res.data.state);
                 if (res.data.state.finished) {
                     endSession();
                 } else {

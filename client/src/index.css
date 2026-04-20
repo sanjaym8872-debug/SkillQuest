@@ -75,20 +75,33 @@
 }
 
 [data-theme="light"] {
-  --game-bg: #f1f5f9;
-  --game-text: #334155;
-  --game-text-heading: #0f172a;
-  --game-text-muted: #64748b;
+  /* Warm, layered off-white base - NOT pure white */
+  --game-bg: #eef0f6;
+  --game-text: #1e293b;
+  --game-text-heading: #0d1321;
+  --game-text-muted: #475569;
   --game-text-dim: #94a3b8;
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --glass-border: rgba(148, 163, 184, 0.3);
-  --glow-primary: rgba(99, 102, 241, 0.1);
-  --glow-secondary: rgba(168, 85, 247, 0.08);
-  --grid-color: rgba(99, 102, 241, 0.04);
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(99, 102, 241, 0.18);
+  --glow-primary: rgba(99, 102, 241, 0.15);
+  --glow-secondary: rgba(168, 85, 247, 0.1);
+  --grid-color: rgba(99, 102, 241, 0.06);
 }
 
-[data-theme="light"] .text-white {
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-white\/90,
+[data-theme="light"] .text-white\/80 {
   color: var(--game-text-heading) !important;
+}
+
+[data-theme="light"] .text-white\/70,
+[data-theme="light"] .text-white\/60,
+[data-theme="light"] .text-white\/50,
+[data-theme="light"] .text-white\/40,
+[data-theme="light"] .text-white\/30,
+[data-theme="light"] .text-white\/20,
+[data-theme="light"] .text-white\/10 {
+  color: var(--game-text-muted) !important;
 }
 
 [data-theme="light"] .text-slate-500 {
@@ -109,19 +122,42 @@
   color: var(--game-text-heading) !important;
 }
 
+[data-theme="light"] .text-indigo-400 {
+  color: var(--game-primary) !important;
+}
 
+[data-theme="light"] .text-emerald-400 {
+  color: #059669 !important;
+}
 
-[data-theme="light"] .bg-slate-950 {
-  background-color: #ffffff !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+[data-theme="light"] .text-amber-400 {
+  color: #d97706 !important;
+}
+
+[data-theme="light"] .text-amber-500 {
+  color: #b45309 !important;
+}
+
+[data-theme="light"] .text-purple-400 {
+  color: #9333ea !important;
+}
+
+[data-theme="light"] .text-rose-400,
+[data-theme="light"] .text-red-500 {
+  color: #e11d48 !important;
+}
+[data-theme="light"] .bg-slate-950,
+[data-theme="light"] .bg-black {
+  background-color: #f5f6fb !important;
+  box-shadow: 0 2px 12px -4px rgba(99,102,241,0.1), 0 1px 3px rgba(0,0,0,0.06);
 }
 
 [data-theme="light"] .bg-slate-900 {
-  background-color: #f8fafc !important;
+  background-color: #f0f1f9 !important;
 }
 
 [data-theme="light"] .bg-slate-800 {
-  background-color: #f1f5f9 !important;
+  background-color: #e8e9f4 !important;
 }
 
 [data-theme="light"] .border-slate-800 {
@@ -143,13 +179,13 @@
 [data-theme="light"] .bg-slate-900\/20,
 [data-theme="light"] .bg-slate-800\/40,
 [data-theme="light"] .bg-slate-800\/30 {
-  background-color: rgba(255, 255, 255, 0.5) !important;
-  backdrop-filter: blur(8px);
+  background-color: rgba(230, 232, 248, 0.6) !important;
+  backdrop-filter: blur(12px);
 }
 
 [data-theme="light"] .bg-slate-900\/80 {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  backdrop-filter: blur(8px);
+  background-color: rgba(240, 241, 249, 0.9) !important;
+  backdrop-filter: blur(12px);
 }
 
 [data-theme="light"] [class*="border-white\/"] {
@@ -164,42 +200,50 @@
 [data-theme="light"] .bg-black\/20,
 [data-theme="light"] .bg-black\/40,
 [data-theme="light"] .bg-black\/50,
-[data-theme="light"] .bg-black\/60 {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+[data-theme="light"] .bg-black\/60,
+[data-theme="light"] .bg-black\/80 {
+  background-color: rgba(225, 227, 246, 0.7) !important;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(99, 102, 241, 0.12);
 }
 
 
 [data-theme="light"] .bg-\[\#020617\],
-[data-theme="light"] .bg-\[\#0b0f1a\] {
-  background-color: #ffffff !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+[data-theme="light"] .bg-\[\#0b0f1a\],
+[data-theme="light"] .bg-\[\#05070a\],
+[data-theme="light"] .bg-\[\#0d1117\] {
+  background-color: #f0f0fb !important;
+  box-shadow: 0 4px 16px -4px rgba(99, 102, 241, 0.15), 0 1px 4px rgba(0,0,0,0.05);
 }
 
-[data-theme="light"] .bg-\[\#020617\]\/60 {
-  background-color: rgba(255, 255, 255, 0.6) !important;
+[data-theme="light"] .bg-\[\#020617\]\/60,
+[data-theme="light"] .bg-\[\#05070a\]\/60,
+[data-theme="light"] .bg-\[\#0d1117\]\/60 {
+  background-color: rgba(232, 232, 251, 0.7) !important;
 }
 
 [data-theme="light"] .bg-\[\#020617\]\/90,
 [data-theme="light"] .bg-\[\#020617\]\/95 {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: rgba(240, 240, 251, 0.95) !important;
 }
 
 [data-theme="light"] .game-card {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(99, 102, 241, 0.18);
   box-shadow:
-    0 10px 30px -10px rgba(99, 102, 241, 0.05),
-    0 4px 12px -5px rgba(0, 0, 0, 0.02) !important;
+    0 4px 20px -4px rgba(99, 102, 241, 0.12),
+    0 1px 4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  backdrop-filter: blur(16px);
 }
 
 [data-theme="light"] .game-card:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(255, 255, 255, 0.97);
+  border-color: rgba(99, 102, 241, 0.4);
   box-shadow:
-    0 20px 40px -15px rgba(99, 102, 241, 0.1),
-    0 0 20px rgba(99, 102, 241, 0.05) !important;
+    0 20px 40px -12px rgba(99, 102, 241, 0.2),
+    0 8px 16px -8px rgba(99, 102, 241, 0.1),
+    0 0 0 1px rgba(99, 102, 241, 0.08) !important;
 }
 
 [data-theme="light"] ::selection {
@@ -242,18 +286,43 @@
   animation: shimmer-text 8s linear infinite;
 }
 
+.bg-birdgame {
+  background: linear-gradient(to bottom, #020617, #0f172a, #1a2e5a);
+}
+
+[data-theme="light"] .bg-birdgame {
+  background: linear-gradient(to bottom, #f8fafc, #f1f5f9, #e2e8f0) !important;
+}
+
 @keyframes shimmer-text {
   to {
     background-position: 200% center;
   }
 }
 
-[data-theme="light"] .bg-white\/5 {
-  background-color: rgba(0, 0, 0, 0.05) !important;
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-white\/\[0\.01\],
+[data-theme="light"] .bg-white\/\[0\.02\],
+[data-theme="light"] .bg-white\/\[0\.03\] {
+  background-color: rgba(99, 102, 241, 0.04) !important;
 }
 
 [data-theme="light"] .bg-white\/10 {
-  background-color: rgba(0, 0, 0, 0.08) !important;
+  background-color: rgba(99, 102, 241, 0.07) !important;
+}
+
+[data-theme="light"] .bg-white\/20 {
+  background-color: rgba(99, 102, 241, 0.1) !important;
+}
+
+[data-theme="light"] .bg-white\/30 {
+  background-color: rgba(99, 102, 241, 0.13) !important;
+}
+
+[data-theme="light"] .bg-white\/40,
+[data-theme="light"] .bg-white\/50 {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
 }
 
 body {
@@ -271,6 +340,18 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Rich premium light theme body background */
+[data-theme="light"] body {
+  background-color: #eef0f6;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 0%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
 }
 
 .game-card {
@@ -442,6 +523,10 @@ body {
   background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
   position: relative;
   overflow: hidden;
+}
+
+[data-theme="light"] .auth-container {
+  background: none;
 }
 
 .auth-container::after {

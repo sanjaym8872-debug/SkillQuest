@@ -7,6 +7,7 @@ import {
     Layers, Command, Share2, Box
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -31,6 +32,9 @@ const CODE_SNIPPETS = [
 const TerminalVelocity = () => {
     const navigate = useNavigate();
     const { user, checkUser } = useAuth();
+    const { theme } = useTheme();
+    const isLight = theme === 'light';
+
     const [gameState, setGameState] = useState('START'); // START, PLAYING, END
     const [currentSnippet, setCurrentSnippet] = useState(null);
     const [userInput, setUserInput] = useState('');
@@ -43,7 +47,26 @@ const TerminalVelocity = () => {
     const inputRef = useRef(null);
     const timerRef = useRef(null);
 
-    // Particle effect on type
+    // Theme-aware color palette
+    const T = {
+        bg: isLight ? '#edeef8' : '#020617',
+        pageBg: isLight
+            ? 'linear-gradient(135deg, #edeef8 0%, #e8eaf6 50%, #ece8f8 100%)'
+            : '#020617',
+        text: isLight ? '#0d1321' : 'rgb(16,185,129)',      // emerald-500 in dark
+        textMuted: isLight ? '#475569' : 'rgba(16,185,129,0.6)',
+        textDim: isLight ? 'rgba(99,102,241,0.5)' : 'rgba(16,185,129,0.2)',
+        accent: isLight ? '#6366f1' : '#10b981',              // indigo in light, emerald in dark
+        accentMuted: isLight ? 'rgba(99,102,241,0.15)' : 'rgba(16,185,129,0.1)',
+        accentBorder: isLight ? 'rgba(99,102,241,0.2)' : 'rgba(16,185,129,0.2)',
+        cardBg: isLight ? 'rgba(255,255,255,0.75)' : 'rgba(2,6,23,0.6)',
+        codeUntyped: isLight ? '#94a3b8' : 'rgba(16,185,129,0.25)',
+        codeTyped: isLight ? '#10b981' : '#34d399',
+        codeError: '#f43f5e',
+        hudBg: isLight ? 'rgba(255,255,255,0.8)' : 'rgba(2,6,23,0.6)',
+        hudBorder: isLight ? 'rgba(99,102,241,0.2)' : 'rgba(16,185,129,0.1)',
+    };
+
     const createParticles = (x, y) => {
         const newParticles = Array.from({ length: 5 }).map((_, i) => ({
             id: Date.now() + i,
@@ -60,7 +83,7 @@ const TerminalVelocity = () => {
         setCombo(0);
         setUserInput('');
         setNewSnippet();
-        setIsTransitioning(false); // Reset transitioning state
+        setIsTransitioning(false);
 
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => {
@@ -73,7 +96,6 @@ const TerminalVelocity = () => {
         }, 1000);
     };
 
-    // Auto-focus management
     useEffect(() => {
         if (gameState === 'PLAYING' && !isTransitioning && inputRef.current) {
             inputRef.current.focus();
@@ -113,13 +135,11 @@ const TerminalVelocity = () => {
                 createParticles(window.innerWidth / 2, window.innerHeight / 2);
             }
 
-            // Advance if the user matches the snippet (ignoring accidental trailing spaces)
             if (val.trim() === target.trim()) {
                 setCombo(prev => prev + 1);
                 setTimeLeft(prev => Math.min(prev + 15, 300));
                 setIsTransitioning(true);
 
-                // 3 second delay to allow user to read the description/insight
                 setTimeout(() => {
                     setNewSnippet();
                     setIsTransitioning(false);
@@ -131,11 +151,17 @@ const TerminalVelocity = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#020617] text-emerald-500 font-mono selection:bg-emerald-500/30 overflow-hidden relative cursor-crosshair">
-            {/* --- ADAVANCED BACKGROUND ENGINE --- */}
+        <div
+            className="min-h-screen font-mono selection:bg-emerald-500/30 overflow-hidden relative cursor-crosshair"
+            style={{
+                background: T.pageBg,
+                color: T.text,
+            }}
+        >
+            {/* Background Engine */}
             <div className="fixed inset-0 pointer-events-none -z-10">
                 {/* Neural Mesh */}
-                <svg className="absolute inset-0 w-full h-full opacity-[0.15]">
+                <svg className="absolute inset-0 w-full h-full" style={{ opacity: isLight ? 0.08 : 0.15, color: T.accent }}>
                     <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
                         <path d="M 100 0 L 0 0 0 100" fill="none" stroke="currentColor" strokeWidth="1" />
                         <circle cx="0" cy="0" r="2" fill="currentColor" />
@@ -144,8 +170,10 @@ const TerminalVelocity = () => {
                 </svg>
 
                 {/* Pulsing Nebulae */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-emerald-500/5 rounded-full blur-[150px] animate-pulse"></div>
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[100px]"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full blur-[150px] animate-pulse"
+                    style={{ background: isLight ? 'rgba(99,102,241,0.06)' : 'rgba(16,185,129,0.05)' }} />
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[100px]"
+                    style={{ background: isLight ? 'rgba(168,85,247,0.05)' : 'rgba(99,102,241,0.05)' }} />
 
                 {/* Floating Particles */}
                 {particles.map(p => (
@@ -153,24 +181,26 @@ const TerminalVelocity = () => {
                         key={p.id}
                         initial={{ opacity: 1, scale: 1 }}
                         animate={{ opacity: 0, scale: 0, y: p.y - 100 }}
-                        className="absolute w-2 h-2 bg-emerald-400 rounded-full"
-                        style={{ left: p.x, top: p.y }}
+                        className="absolute w-2 h-2 rounded-full"
+                        style={{ left: p.x, top: p.y, background: T.accent }}
                     />
                 ))}
             </div>
 
-            {/* --- HOLOGRAPHIC INTERFACE --- */}
+            {/* Main Interface */}
             <div className="min-h-screen w-full flex flex-col p-4 md:p-8 lg:p-12 relative z-10 max-w-[1600px] mx-auto overflow-y-auto lg:overflow-hidden">
 
-                {/* Top Telemetry Header - Now Grid Based for better flow */}
+                {/* Header */}
                 <header className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 mb-8 lg:mb-12 w-full">
                     <div className="space-y-4 lg:space-y-6">
                         <motion.button
                             whileHover={{ x: -5 }}
                             onClick={() => navigate('/dashboard')}
-                            className="group flex items-center gap-3 text-emerald-400 hover:text-emerald-300 transition-all font-black text-[9px] md:text-[10px] tracking-[0.5em] uppercase w-fit"
+                            className="group flex items-center gap-3 transition-all font-black text-[9px] md:text-[10px] tracking-[0.5em] uppercase w-fit"
+                            style={{ color: T.accent }}
                         >
-                            <div className="p-1.5 md:p-2 border border-emerald-500/20 rounded-lg group-hover:border-emerald-500/50">
+                            <div className="p-1.5 md:p-2 rounded-lg transition-all"
+                                style={{ border: `1px solid ${T.accentBorder}` }}>
                                 <ChevronLeft size={12} />
                             </div>
                             Disconnect Link
@@ -182,25 +212,34 @@ const TerminalVelocity = () => {
                                 animate={{ opacity: 1, x: 0 }}
                                 className="text-[clamp(1.5rem,4vw,2.8rem)] font-black italic tracking-tighter uppercase leading-[0.95] select-none"
                             >
-                                <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-100 to-emerald-600">Terminal</span>
+                                <span className="text-transparent bg-clip-text"
+                                    style={{ backgroundImage: isLight
+                                        ? 'linear-gradient(135deg, #6366f1, #a855f7)'
+                                        : 'linear-gradient(to bottom right, #d1fae5, #10b981)'
+                                    }}>Terminal</span>
                                 <br />
-                                <span className="text-emerald-500/20 stroke-emerald-500 stroke-1" style={{ WebkitTextStroke: '1px rgba(16, 185, 129, 0.3)' }}>Velocity</span>
+                                <span style={{
+                                    color: isLight ? 'rgba(99,102,241,0.25)' : 'rgba(16,185,129,0.2)',
+                                    WebkitTextStroke: isLight ? '1px rgba(99,102,241,0.35)' : '1px rgba(16,185,129,0.3)',
+                                }}>Velocity</span>
                             </motion.h1>
-                            <div className="absolute -top-2 md:-top-4 left-0 md:left-auto md:right-0 px-3 py-0.5 md:px-4 md:py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full whitespace-nowrap">
-                                <span className="text-[8px] md:text-[10px] font-black tracking-widest uppercase text-emerald-400 animate-pulse">Neural_Node_Active</span>
+                            <div className="absolute -top-2 md:-top-4 left-0 md:left-auto md:right-0 px-3 py-0.5 md:px-4 md:py-1 rounded-full whitespace-nowrap"
+                                style={{ background: T.accentMuted, border: `1px solid ${T.accentBorder}` }}>
+                                <span className="text-[8px] md:text-[10px] font-black tracking-widest uppercase animate-pulse"
+                                    style={{ color: T.accent }}>Neural_Node_Active</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* HUD Modules - More Compact */}
+                    {/* HUD Modules */}
                     <div className="flex flex-wrap lg:flex-nowrap gap-2 md:gap-3 self-end lg:self-start">
-                        <HudModule label="Sync_Time" value={`${timeLeft}s`} critical={timeLeft < 15} icon={<Activity size={12} />} />
-                        <HudModule label="Data_Laps" value={`${combo}`} icon={<Cpu size={12} />} />
-                        <HudModule label="Class_ID" value={user?.characterClass?.split(' ')[0]} icon={<Shield size={12} />} />
+                        <HudModule label="Sync_Time" value={`${timeLeft}s`} critical={timeLeft < 15} icon={<Activity size={12} />} T={T} />
+                        <HudModule label="Data_Laps" value={`${combo}`} icon={<Cpu size={12} />} T={T} />
+                        <HudModule label="Class_ID" value={user?.characterClass?.split(' ')[0]} icon={<Shield size={12} />} T={T} />
                     </div>
                 </header>
 
-                {/* --- MAIN CORE CONSOLE area --- */}
+                {/* Main Console */}
                 <main className="flex-1 flex flex-col items-center justify-center perspective-1000 w-full mb-8">
                     <AnimatePresence mode="wait">
                         {gameState === 'START' && (
@@ -210,20 +249,28 @@ const TerminalVelocity = () => {
                                 exit={{ opacity: 0, scale: 1.1, filter: 'blur(20px)' }}
                                 className="relative text-center p-6"
                             >
-                                <div className="absolute -inset-10 md:-inset-24 bg-emerald-500/5 rounded-full blur-[60px] md:blur-[100px] animate-pulse"></div>
+                                <div className="absolute -inset-10 md:-inset-24 rounded-full blur-[60px] md:blur-[100px] animate-pulse"
+                                    style={{ background: T.accentMuted }} />
                                 <div className="space-y-4 md:space-y-6 relative z-10">
-                                    <div className="p-4 md:p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] md:rounded-[3rem] backdrop-blur-3xl shadow-xl inline-block">
-                                        <Atom size={clampValue(30, 50)} className="text-emerald-500 animate-[spin_10s_linear_infinite]" />
+                                    <div className="p-4 md:p-6 rounded-[2rem] md:rounded-[3rem] backdrop-blur-3xl shadow-xl inline-block"
+                                        style={{ background: T.accentMuted, border: `1px solid ${T.accentBorder}` }}>
+                                        <Atom size={clampValue(30, 50)} className="animate-[spin_10s_linear_infinite]" style={{ color: T.accent }} />
                                     </div>
                                     <div className="space-y-1 md:space-y-2">
-                                        <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.2em]">Initialize Link?</h2>
-                                        <p className="text-emerald-400/60 text-[8px] md:text-[10px] tracking-widest uppercase italic font-black">Neural Architecture Validation Sync</p>
+                                        <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.2em]"
+                                            style={{ color: T.text }}>Initialize Link?</h2>
+                                        <p className="text-[8px] md:text-[10px] tracking-widest uppercase italic font-black"
+                                            style={{ color: T.textMuted }}>Neural Architecture Validation Sync</p>
                                     </div>
                                     <button
                                         onClick={startSession}
-                                        className="group relative px-8 py-4 md:px-10 md:py-5 bg-emerald-500 text-[#020617] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-[10px] md:text-xs rounded-lg md:rounded-xl overflow-hidden hover:scale-105 transition-all shadow-lg"
+                                        className="group relative px-8 py-4 md:px-10 md:py-5 font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-[10px] md:text-xs rounded-lg md:rounded-xl overflow-hidden hover:scale-105 transition-all shadow-lg"
+                                        style={{
+                                            background: T.accent,
+                                            color: isLight ? '#ffffff' : '#020617',
+                                        }}
                                     >
-                                        <div className="absolute inset-x-0 bottom-0 h-1 bg-white/30"></div>
+                                        <div className="absolute inset-x-0 bottom-0 h-1 bg-white/30" />
                                         <span className="relative z-10">Enter_Simulation</span>
                                     </button>
                                 </div>
@@ -237,25 +284,36 @@ const TerminalVelocity = () => {
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 className="w-full h-full flex flex-col items-center justify-center max-w-6xl mx-auto"
                             >
-                                {/* Advanced Code Reactor */}
                                 <div className="w-full relative group space-y-8 md:space-y-12 lg:space-y-20">
                                     {/* Console Decoration */}
-                                    <div className="absolute -top-10 left-4 md:left-0 flex items-center gap-4 md:gap-6 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-emerald-400/60">
+                                    <div className="absolute -top-10 left-4 md:left-0 flex items-center gap-4 md:gap-6 text-[8px] md:text-[10px] font-black uppercase tracking-widest"
+                                        style={{ color: T.textMuted }}>
                                         <span className="flex items-center gap-1.5 md:gap-2"><Layers size={10} /> stream_v2.0</span>
                                         <span className="flex items-center gap-1.5 md:gap-2"><Command size={10} /> encryption_aes_256</span>
                                     </div>
 
-                                    {/* Crystal Glass Body - Reduced Height */}
-                                    <div className={`
-                                        relative p-6 md:p-10 lg:p-14 bg-[#020617]/60 border-[1px] rounded-[2rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden backdrop-blur-3xl shadow-[0_0_80px_rgba(16,185,129,0.03)]
-                                        ${isWrong ? 'border-rose-500/40 shadow-[0_0_40px_rgba(244,63,94,0.1)]' : 'border-emerald-500/20'}
-                                        transition-all duration-300 w-full min-h-[200px] md:min-h-[280px] flex items-center
-                                    `}>
-                                        {/* Scanning Line overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/5 to-transparent h-1/2 w-full animate-scanline pointer-events-none"></div>
+                                    {/* Code Display Card */}
+                                    <div
+                                        className={`relative p-6 md:p-10 lg:p-14 border-[1px] rounded-[2rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden backdrop-blur-3xl transition-all duration-300 w-full min-h-[200px] md:min-h-[280px] flex items-center`}
+                                        style={{
+                                            background: isLight
+                                                ? 'rgba(255,255,255,0.75)'
+                                                : 'rgba(2,6,23,0.6)',
+                                            borderColor: isWrong
+                                                ? 'rgba(244,63,94,0.5)'
+                                                : T.accentBorder,
+                                            boxShadow: isWrong
+                                                ? '0 0 40px rgba(244,63,94,0.1)'
+                                                : isLight
+                                                    ? '0 8px 32px rgba(99,102,241,0.1)'
+                                                    : '0 0 80px rgba(16,185,129,0.03)',
+                                        }}
+                                    >
+                                        {/* Scanning Line */}
+                                        <div className="absolute inset-0 h-1/2 w-full animate-scanline pointer-events-none"
+                                            style={{ background: `linear-gradient(to bottom, transparent, ${T.accentMuted}, transparent)` }} />
 
                                         <div className="relative z-10 w-full min-h-[4rem] flex items-center">
-                                            {/* Code Display with Cursor Glow - Wrapped in AnimatePresence for Smooth Transition */}
                                             <AnimatePresence mode="wait">
                                                 <motion.div
                                                     key={currentSnippet.text}
@@ -266,30 +324,33 @@ const TerminalVelocity = () => {
                                                     className="text-[1.2rem] md:text-[1.8rem] lg:text-[clamp(1.5rem,3vw,2.4rem)] font-black font-mono leading-[1.2] tracking-tighter break-words text-center md:text-left w-full"
                                                 >
                                                     {currentSnippet.text.split('').map((char, i) => {
-                                                        let color = "text-emerald-500/20";
+                                                        let charColor = T.codeUntyped;
                                                         let glow = "";
                                                         if (i < userInput.length) {
                                                             const isCorrect = currentSnippet.text[i] === userInput[i];
-                                                            color = isCorrect ? "text-emerald-400" : "text-rose-500";
-                                                            glow = isCorrect ? "0 0 20px rgba(16, 185, 129, 0.4)" : "0 0 20px rgba(244, 63, 94, 0.4)";
+                                                            charColor = isCorrect ? T.codeTyped : T.codeError;
+                                                            glow = isCorrect
+                                                                ? isLight ? '0 0 12px rgba(16,185,129,0.3)' : '0 0 20px rgba(16,185,129,0.4)'
+                                                                : '0 0 20px rgba(244,63,94,0.4)';
                                                         }
                                                         return (
-                                                            <span key={i} className={`relative inline-block ${color} transition-all duration-150`} style={{ textShadow: glow }}>
+                                                            <span key={i} className="relative inline-block transition-all duration-150"
+                                                                style={{ color: charColor, textShadow: glow }}>
                                                                 {char === ' ' ? '\u00A0' : char}
-                                                                {/* Sync Cursor (Strictly in front of character) */}
                                                                 {i === userInput.length && (
                                                                     <motion.span
                                                                         animate={{ opacity: [0, 1, 0] }}
                                                                         transition={{ repeat: Infinity, duration: 0.8 }}
-                                                                        className="absolute left-0 inset-y-0 w-[1.5px] md:w-[2px] bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.8)]"
+                                                                        className="absolute left-0 inset-y-0 w-[1.5px] md:w-[2px]"
+                                                                        style={{ background: T.accent, boxShadow: `0 0 10px ${T.accent}` }}
                                                                     />
                                                                 )}
-                                                                {/* Final indicator if everything is typed but state hasn't advanced yet */}
                                                                 {i === currentSnippet.text.length - 1 && userInput.length >= currentSnippet.text.length && (
                                                                     <motion.span
                                                                         animate={{ opacity: [0, 1, 0] }}
                                                                         transition={{ repeat: Infinity, duration: 0.8 }}
-                                                                        className="absolute -right-2 inset-y-0 w-[4px] bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,1)]"
+                                                                        className="absolute -right-2 inset-y-0 w-[4px]"
+                                                                        style={{ background: T.accent, boxShadow: `0 0 20px ${T.accent}` }}
                                                                     />
                                                                 )}
                                                             </span>
@@ -299,7 +360,7 @@ const TerminalVelocity = () => {
                                             </AnimatePresence>
                                         </div>
 
-                                        {/* Transparent Hidden Input */}
+                                        {/* Hidden Input */}
                                         <input
                                             autoFocus
                                             ref={inputRef}
@@ -316,15 +377,16 @@ const TerminalVelocity = () => {
                                             <motion.div
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
-                                                className="absolute inset-x-0 -bottom-6 flex items-center justify-center gap-2 text-emerald-400 font-black text-[10px] uppercase tracking-[0.4em]"
+                                                className="absolute inset-x-0 -bottom-6 flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-[0.4em]"
+                                                style={{ color: T.accent }}
                                             >
-                                                <div className="w-1 h-1 bg-emerald-400 rounded-full animate-ping"></div>
+                                                <div className="w-1 h-1 rounded-full animate-ping" style={{ background: T.accent }} />
                                                 Next Concept Syncing...
                                             </motion.div>
                                         )}
                                     </div>
 
-                                    {/* Holographic Insight Dock - Tucked Closer with Unified Transition */}
+                                    {/* Insight Dock */}
                                     <div className="flex justify-center w-full mt-8 lg:mt-12">
                                         <AnimatePresence mode="wait">
                                             <motion.div
@@ -333,11 +395,18 @@ const TerminalVelocity = () => {
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: -10 }}
                                                 transition={{ duration: 0.5, delay: 0.1 }}
-                                                className="relative p-5 md:p-7 bg-emerald-500/[0.04] border border-emerald-500/10 rounded-[1.5rem] md:rounded-[2rem] backdrop-blur-xl max-w-2xl w-full text-center overflow-hidden shadow-lg"
+                                                className="relative p-5 md:p-7 rounded-[1.5rem] md:rounded-[2rem] backdrop-blur-xl max-w-2xl w-full text-center overflow-hidden shadow-lg"
+                                                style={{
+                                                    background: T.accentMuted,
+                                                    border: `1px solid ${T.accentBorder}`,
+                                                }}
                                             >
-                                                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-20"></div>
-                                                <div className="text-[8px] md:text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-2 md:mb-3">Neural_Optimization_Protocol</div>
-                                                <p className="text-emerald-500/90 text-xs md:text-sm font-bold italic leading-relaxed px-4">
+                                                <div className="absolute top-0 left-0 w-full h-0.5 opacity-20"
+                                                    style={{ background: `linear-gradient(to right, transparent, ${T.accent}, transparent)` }} />
+                                                <div className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] mb-2 md:mb-3"
+                                                    style={{ color: T.accent }}>Neural_Optimization_Protocol</div>
+                                                <p className="text-xs md:text-sm font-bold italic leading-relaxed px-4"
+                                                    style={{ color: T.textMuted }}>
                                                     "{currentSnippet.desc}"
                                                 </p>
                                             </motion.div>
@@ -351,36 +420,50 @@ const TerminalVelocity = () => {
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="bg-[#020617]/60 border border-emerald-500/20 p-8 md:p-12 lg:p-16 rounded-[2rem] md:rounded-[4rem] max-w-[90%] md:max-w-2xl w-full text-center shadow-2xl relative backdrop-blur-3xl overflow-hidden mt-[-10vh]"
+                                className="border p-8 md:p-12 lg:p-16 rounded-[2rem] md:rounded-[4rem] max-w-[90%] md:max-w-2xl w-full text-center shadow-2xl relative backdrop-blur-3xl overflow-hidden mt-[-10vh]"
+                                style={{
+                                    background: T.cardBg,
+                                    borderColor: T.accentBorder,
+                                }}
                             >
-                                <div className="absolute -top-40 -left-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px]"></div>
+                                <div className="absolute -top-40 -left-40 w-80 h-80 rounded-full blur-[100px]"
+                                    style={{ background: T.accentMuted }} />
 
                                 <motion.div
                                     animate={{ rotate: 360 }}
                                     transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-                                    className="mb-6 md:mb-8 p-4 md:p-6 border-[1px] border-emerald-500/20 rounded-full inline-block"
+                                    className="mb-6 md:mb-8 p-4 md:p-6 rounded-full inline-block"
+                                    style={{ border: `1px solid ${T.accentBorder}` }}
                                 >
-                                    <Trophy size={clampValue(30, 48)} className="text-emerald-400" />
+                                    <Trophy size={clampValue(30, 48)} style={{ color: T.accent }} />
                                 </motion.div>
 
-                                <h2 className="text-[clamp(1.5rem,5vw,2.8rem)] font-black text-white uppercase tracking-tighter mb-3 md:mb-5 italic leading-none">Simulation<br />Terminated</h2>
-                                <p className="text-emerald-400 font-black uppercase tracking-[0.4em] md:tracking-[0.6em] text-[7px] md:text-[9px] mb-8 md:mb-12">Intelligence Retrieval Complete</p>
+                                <h2 className="text-[clamp(1.5rem,5vw,2.8rem)] font-black uppercase tracking-tighter mb-3 md:mb-5 italic leading-none"
+                                    style={{ color: T.text }}>Simulation<br />Terminated</h2>
+                                <p className="font-black uppercase tracking-[0.4em] md:tracking-[0.6em] text-[7px] md:text-[9px] mb-8 md:mb-12"
+                                    style={{ color: T.accent }}>Intelligence Retrieval Complete</p>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mb-8 md:mb-12 text-left">
-                                    <EndStat label="Concepts_Mastered" value={combo} />
-                                    <EndStat label="Reflex_Rate" value={`${Math.floor(((combo * 20) / 5) / (60 / 60))} WPM`} />
+                                    <EndStat label="Concepts_Mastered" value={combo} T={T} />
+                                    <EndStat label="Reflex_Rate" value={`${Math.floor(((combo * 20) / 5) / (60 / 60))} WPM`} T={T} />
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                                     <button
                                         onClick={startSession}
-                                        className="flex-1 py-4 md:py-5 bg-emerald-500 text-[#020617] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs rounded-xl md:rounded-2xl hover:bg-emerald-400 transition-all shadow-xl"
+                                        className="flex-1 py-4 md:py-5 font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs rounded-xl md:rounded-2xl transition-all shadow-xl"
+                                        style={{ background: T.accent, color: isLight ? '#ffffff' : '#020617' }}
                                     >
                                         Restart_Loop
                                     </button>
                                     <button
                                         onClick={() => navigate('/dashboard')}
-                                        className="flex-1 py-4 md:py-5 border border-emerald-500/20 text-emerald-400 font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs rounded-xl md:rounded-2xl hover:bg-emerald-500/10 transition-all shadow-sm"
+                                        className="flex-1 py-4 md:py-5 font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs rounded-xl md:rounded-2xl transition-all shadow-sm"
+                                        style={{
+                                            border: `1px solid ${T.accentBorder}`,
+                                            color: T.accent,
+                                            background: 'transparent',
+                                        }}
                                     >
                                         Seal_Nexus
                                     </button>
@@ -390,11 +473,11 @@ const TerminalVelocity = () => {
                     </AnimatePresence>
                 </main>
 
-                {/* Vertical Data Stream Labels (Floating Deck) */}
+                {/* Vertical Data Stream Labels */}
                 <div className="fixed bottom-8 right-8 space-y-4 opacity-10 hidden xl:block">
-                    <VerticalTag label="ENC_V4" />
-                    <VerticalTag label="NET_R" />
-                    <VerticalTag label="CORE_X" />
+                    <VerticalTag label="ENC_V4" T={T} />
+                    <VerticalTag label="NET_R" T={T} />
+                    <VerticalTag label="CORE_X" T={T} />
                 </div>
             </div>
 
@@ -414,31 +497,43 @@ const TerminalVelocity = () => {
     );
 };
 
-// Helper to handle scaling
 const clampValue = (min, max) => {
     return `${Math.max(min, Math.min(max, (window?.innerWidth || 1200) * 0.05))}px`;
 };
 
-const HudModule = ({ label, value, critical, icon }) => (
-    <div className={`px-4 py-3 md:px-6 md:py-4 bg-[#020617]/60 border-[1px] rounded-[1rem] md:rounded-[1.5rem] text-center backdrop-blur-2xl transition-all flex-1 min-w-[100px] max-w-[160px] ${critical ? 'border-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.1)] animate-pulse' : 'border-emerald-500/10 shadow-lg'}`}>
-        <div className="flex items-center justify-center gap-1 mb-1 text-emerald-400 font-black text-[7px] md:text-[8px] uppercase tracking-widest whitespace-nowrap">
+const HudModule = ({ label, value, critical, icon, T }) => (
+    <div
+        className={`px-4 py-3 md:px-6 md:py-4 border-[1px] rounded-[1rem] md:rounded-[1.5rem] text-center backdrop-blur-2xl transition-all flex-1 min-w-[100px] max-w-[160px] ${critical ? 'animate-pulse' : ''}`}
+        style={{
+            background: T.hudBg,
+            borderColor: critical ? 'rgba(244,63,94,0.6)' : T.hudBorder,
+            boxShadow: critical ? '0 0 15px rgba(244,63,94,0.1)' : undefined,
+        }}
+    >
+        <div className="flex items-center justify-center gap-1 mb-1 font-black text-[7px] md:text-[8px] uppercase tracking-widest whitespace-nowrap"
+            style={{ color: T.accent }}>
             {icon} {label}
         </div>
-        <div className={`text-lg md:text-2xl font-black italic tracking-tighter ${critical ? 'text-rose-400' : 'text-emerald-100'}`}>
+        <div className="text-lg md:text-2xl font-black italic tracking-tighter"
+            style={{ color: critical ? '#fb7185' : T.text }}>
             {value}
         </div>
     </div>
 );
 
-const EndStat = ({ label, value }) => (
-    <div className="p-4 md:p-6 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-[1.5rem] md:rounded-[2rem] shadow-inner">
-        <div className="text-[7px] md:text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-1">{label}</div>
-        <div className="text-xl md:text-3xl font-black text-white italic tracking-tighter">{value}</div>
+const EndStat = ({ label, value, T }) => (
+    <div className="p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-inner"
+        style={{ background: T.accentMuted, border: `1px solid ${T.accentBorder}` }}>
+        <div className="text-[7px] md:text-[8px] font-black uppercase tracking-[0.2em] mb-1"
+            style={{ color: T.accent }}>{label}</div>
+        <div className="text-xl md:text-3xl font-black italic tracking-tighter"
+            style={{ color: T.text }}>{value}</div>
     </div>
 );
 
-const VerticalTag = ({ label }) => (
-    <div className="[writing-mode:vertical-lr] text-[8px] font-black uppercase tracking-[1em] text-emerald-500 border-l border-emerald-500/20 pl-2">
+const VerticalTag = ({ label, T }) => (
+    <div className="[writing-mode:vertical-lr] text-[8px] font-black uppercase tracking-[1em] pl-2"
+        style={{ color: T.accent, borderLeft: `1px solid ${T.accentBorder}` }}>
         {label}
     </div>
 );
